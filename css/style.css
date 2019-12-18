@@ -88,6 +88,7 @@ body {
 
 .budget__income--value,
 .budget__expenses--value {
+    margin-top: 0.2rem;
     letter-spacing: 1px;
     float: left;
 }

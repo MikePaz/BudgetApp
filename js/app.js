@@ -140,6 +140,8 @@ let budgetController = (function () {
             }
         },
 
+      
+
         testing: function () {
             console.log(data)
         }
@@ -163,7 +165,23 @@ let UIController = (function () {
         budgetExpenseValue: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
-        expensesPercLabel: '.item__percentage'
+        expensesPercLabel: '.item__percentage',
+        dateLabel:'.budget__title--month'
+    };
+
+    let formatNumber = function(number , type) {
+        let num , int , dec    
+
+         num  = Math.abs(number).toFixed(2).split('.')
+
+         int = num[0];
+            if(int.length > 3) {
+                int = int.substr(0,int.length - 3) + ',' + int.substr(int.length-3,int.length); // input 2310 , output 2,310
+            }
+
+         dec = num[1];
+
+         return (type === 'exp' ? '-' : "+") + '' + int + '.' + dec
     };
 
     return {
@@ -195,7 +213,7 @@ let UIController = (function () {
 
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', formatNumber(obj.value , type));
 
             // Insert the HTML into the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
@@ -250,6 +268,18 @@ let UIController = (function () {
             
         },
 
+        displayMonth : function(){
+            let now  , year ,month , months;
+            now= new Date();
+            year = now.getFullYear()
+
+            months=['January','February','March' , 'April' , 'May' , 'June' , 'July' , 'August' , 
+            'September','October','November','December']
+
+            month = now.getMonth()
+            
+            document.querySelector(DOMStrings.dateLabel).textContent = months[month] + ' ' + year;
+        },
         getDOMStrings: function () {
             return DOMStrings;
         }
@@ -359,6 +389,7 @@ let controller = (function (budgetCtrl, UICtrl) {
     return {
         init: function () {
             console.log('Application has started');
+            UICtrl.displayMonth();
             UICtrl.displayBudget({
                 budget: 0,
                 totalInc: 0,
